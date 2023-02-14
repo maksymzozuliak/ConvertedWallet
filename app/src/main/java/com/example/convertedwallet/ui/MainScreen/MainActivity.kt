@@ -1,4 +1,4 @@
-package com.example.convertedwallet
+package com.example.convertedwallet.ui.MainScreen
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

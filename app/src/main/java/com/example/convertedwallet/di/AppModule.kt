@@ -1,21 +1,29 @@
 package com.example.convertedwallet.di
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.example.convertedwallet.model.database.MoneyDatabase
+import com.example.convertedwallet.model.internet.CurrencyApi
+import com.example.convertedwallet.model.repository.InternetRepository
+import com.example.convertedwallet.model.repository.InternetRepositoryImpl
 import com.example.convertedwallet.model.repository.MoneyRepository
 import com.example.convertedwallet.model.repository.MoneyRepositoryImpl
+import com.example.convertedwallet.model.spName
 import com.example.convertedwallet.model.use_cases.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 private const val BASE_URL = "https://api.exchangeratesapi.io/"
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
     // Database
@@ -59,18 +67,15 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideMainRepository(api: CurrencyApi): MainRepository = DefaultMainRepository(api)
+    fun provideMainRepository(api: CurrencyApi): InternetRepository = InternetRepositoryImpl(api)
 
     @Singleton
     @Provides
-    fun provideDispatchers(): DispatcherProvider = object : DispatcherProvider {
-        override val main: CoroutineDispatcher
-            get() = Dispatchers.Main
-        override val io: CoroutineDispatcher
-            get() = Dispatchers.IO
-        override val default: CoroutineDispatcher
-            get() = Dispatchers.Default
-        override val unconfined: CoroutineDispatcher
-            get() = Dispatchers.Unconfined
+    fun provideSharedPref(app: Application): SharedPreferences {
+        return app.applicationContext.getSharedPreferences(
+            spName,
+            Context.MODE_PRIVATE
+        )
     }
+
 }
