@@ -154,7 +154,7 @@ fun MainScreen(
                             }
                         },
                         directions = setOf(DismissDirection.StartToEnd),
-                        dismissThresholds = { FractionalThreshold(0.3f) }
+                        dismissThresholds = { FractionalThreshold(0.6f) }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
