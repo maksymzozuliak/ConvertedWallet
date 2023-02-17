@@ -1,8 +1,6 @@
 package com.example.convertedwallet.model.repository
 
-import com.example.convertedwallet.model.internet.CurrencyApi
-import com.example.convertedwallet.model.internet.CurrencyResponse
-import com.example.convertedwallet.model.internet.Resource
+import com.example.convertedwallet.model.internet.*
 import javax.inject.Inject
 
 class InternetRepositoryImpl @Inject constructor(
@@ -22,5 +20,4 @@ class InternetRepositoryImpl @Inject constructor(
             Resource.Error(e.message ?: "Error")
         }
     }
-
 }

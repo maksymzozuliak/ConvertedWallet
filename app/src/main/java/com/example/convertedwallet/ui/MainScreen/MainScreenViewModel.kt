@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.convertedwallet.model.BaseCurrency
 import com.example.convertedwallet.model.Money
 import com.example.convertedwallet.model.internet.Resource
 import com.example.convertedwallet.model.languageSpKey
@@ -47,9 +48,7 @@ class MainScreenViewModel @Inject constructor(
 
     sealed class MoneyEvent {
 
-        class UpdateRates(val base : String): MoneyEvent()
-        class SaveMoney(val money: Money): MoneyEvent()
-        object AddMoney : MoneyEvent()
+        object UpdateRates : MoneyEvent()
         class DeleteMoney(val money: Money): MoneyEvent()
         class ChangeCurrency(val currency: BaseCurrency): MoneyEvent()
 
@@ -58,18 +57,7 @@ class MainScreenViewModel @Inject constructor(
     fun onEvent(event: MoneyEvent) {
         when(event) {
             is MoneyEvent.UpdateRates ->{
-                viewModelScope.launch {
-                    sharedPreferences.edit()
-                        .putString(languageSpKey,event.base)
-                        .apply()
-                    updateRates()
-                }
-            }
-            is MoneyEvent.SaveMoney ->{
-                viewModelScope.launch {
-                    useCases.addMoney(event.money)
-                    updateRates()
-                }
+                updateRates()
             }
             is MoneyEvent.DeleteMoney ->{
                 viewModelScope.launch {
@@ -78,18 +66,6 @@ class MainScreenViewModel @Inject constructor(
             }
             is MoneyEvent.ChangeCurrency ->{
                 _currentCurrency.value = event.currency
-            }
-            is MoneyEvent.AddMoney -> {
-                val newList = _moneyList.value.toMutableList()
-                newList.add(Money(
-                    currency = "Cur",
-                    inCurrency = 0.0,
-                    rateToUAH = 0.0,
-                    rateToEUR = 0.0,
-                    rateToUSD = 0.0
-
-                )
-                )
             }
         }
     }
@@ -100,26 +76,22 @@ class MainScreenViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            val responseUAH = internetRepository.getRates(BaseCurrency.UAH.string)
-            val responseUSD = internetRepository.getRates(BaseCurrency.USD.string)
-            val responseEUR = internetRepository.getRates(BaseCurrency.EUR.string)
+            _moneyList.value.forEach { money ->
 
-            if (responseUAH is Resource.Success &&
-                    responseEUR is Resource.Success &&
-                    responseUSD is Resource.Success
-            ) {
+                val response = internetRepository.getRates(money.currency)
 
-                _moneyList.value.forEach { money ->
+                if (response is Resource.Success) {
                     useCases.addMoney(money.copy(
-                        rateToUAH = money.updateSingleRate(responseUAH.data!!.rates),
-                        rateToUSD = money.updateSingleRate(responseUSD.data!!.rates),
-                        rateToEUR = money.updateSingleRate(responseEUR.data!!.rates)
+                        rateToUAH = response.data!!.rates.UAH,
+                        rateToUSD = response.data.rates.USD,
+                        rateToEUR = response.data.rates.EUR
                     ))
+                } else {
+                    //todo
                 }
-                _isLoading.value = false
-            } else {
-                _isLoading.value = false
             }
+
+            _isLoading.value = false
         }
     }
 
@@ -130,9 +102,5 @@ class MainScreenViewModel @Inject constructor(
                 _moneyList.value = money
             }
             .launchIn(viewModelScope)
-    }
-
-    enum class BaseCurrency(val string: String) {
-        UAH("UAH"),USD("USD"),EUR("EUR")
     }
 }

@@ -10,4 +10,5 @@ interface CurrencyApi {
     suspend fun getRates(
         @Query("base") base: String
     ) : Response<CurrencyResponse>
+
 }

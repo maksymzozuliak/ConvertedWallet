@@ -6,4 +6,5 @@ import com.example.convertedwallet.model.internet.Resource
 interface InternetRepository {
 
     suspend fun getRates(base: String): Resource<CurrencyResponse>
+
 }
