@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace 'com.example.convertedwallet'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.convertedwallet"
         minSdk 26
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -67,6 +67,9 @@ dependencies {
     implementation "androidx.room:room-runtime:2.3.0"
     kapt "androidx.room:room-compiler:2.3.0"
 
+    // Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:2.3.0"
+
     //Dagger - Hilt
     implementation "com.google.dagger:hilt-android:2.38.1"
     kapt "com.google.dagger:hilt-android-compiler:2.37"
@@ -103,4 +106,7 @@ dependencies {
     // Coroutine Lifecycle Scopes
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
+
+    // System Controller (StatusBar)
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.23.1"
 }

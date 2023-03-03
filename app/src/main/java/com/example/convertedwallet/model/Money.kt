@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Money(
 
     val currency : String,
-    val inCurrency : Double,
+    val inCurrency : Int,
     val rateToUAH: Double,
     val rateToUSD: Double,
     val rateToEUR: Double,

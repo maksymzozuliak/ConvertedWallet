@@ -1,4 +1,4 @@
-package com.example.convertedwallet.ui.MainScreen
+package com.example.convertedwallet.ui.main_screen
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -13,7 +13,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -23,6 +22,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.convertedwallet.ui.main_screen.main_screen_components.CurrencySlider
+import com.example.convertedwallet.ui.main_screen.main_screen_components.MoneyItem
+import com.example.convertedwallet.ui.main_screen.main_screen_components.UpdateButton
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -33,6 +35,7 @@ fun MainScreen(
     val scaffoldState = rememberScaffoldState()
     val list = viewModel.moneyList.value
     val scope = rememberCoroutineScope()
+    val currentCurrency = viewModel.currentCurrency.value
 
     Scaffold(
         snackbarHost = {
@@ -47,7 +50,7 @@ fun MainScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    MainScreenViewModel.MoneyEvent.AddMoney
+
                 },
                 backgroundColor = MaterialTheme.colors.primary,
                 modifier = Modifier.padding(bottom = 34.dp)
@@ -65,13 +68,31 @@ fun MainScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
             ) {
-                //todo buttons
+                CurrencySlider(
+                    selectedCurrency = currentCurrency,
+                    onChangeCurrency = {
+                        viewModel.onEvent(
+                            MainScreenViewModel.MoneyEvent.ChangeCurrency(it)
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(10.dp)
+                )
+                UpdateButton(
+                    onClick = {},
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(20.dp)
+                )
             }
             LazyColumn(
                 modifier = Modifier
-                    .padding(vertical = 24.dp, horizontal = 12.dp)
+                    .padding(vertical = 24.dp)
                     .fillMaxSize()
             ) {
 
@@ -88,7 +109,7 @@ fun MainScreen(
                                 viewModel.onEvent(MainScreenViewModel.MoneyEvent.DeleteMoney(money))
                                 scope.launch {
                                     scaffoldState.snackbarHostState.showSnackbar(
-                                        message = "Money deleted",
+                                        message = "Deleted",
                                     )
                                 }
                             }
@@ -138,17 +159,14 @@ fun MainScreen(
                                     if (dismissState.dismissDirection != null) 4.dp else 0.dp
                                 ).value
                             ) {
-                                ExerciseItem(
-                                    exercise = exercise,
+                                MoneyItem(
+                                    money = money,
+                                    baseCurrency = currentCurrency,
                                     modifier = Modifier
                                         .padding()
                                         .background(MaterialTheme.colors.background)
                                         .fillMaxWidth()
                                         .clickable {
-                                            navController.navigate(
-                                                Screen.AddEditExerciseScreen.route +
-                                                        "?exerciseId=${exercise.id}"
-                                            )
                                         }
                                 )
                             }
