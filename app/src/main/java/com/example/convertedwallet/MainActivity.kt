@@ -18,7 +18,9 @@ import androidx.navigation.navArgument
 import com.example.convertedwallet.ui.main_screen.MainScreen
 import com.example.convertedwallet.ui.theme.ConvertedWalletTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,35 +40,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-
                     MainScreen()
-//                    val navController = rememberNavController()
-//                    NavHost(
-//                        navController = navController,
-//                        startDestination = Screen.MainScreen.route
-//                    ) {
-//                        composable(
-//                            route = Screen.MainScreen.route
-//                        ) {
-//                            MainScreen(navController = navController)
-//                        }
-//                        composable(
-//                            route = Screen.AddEditMoneyScreen.route +
-//                                    "?moneyId={moneyId}",
-//                            arguments = listOf(
-//                                navArgument(
-//                                    name = "moneyId"
-//                                ) {
-//                                    type = NavType.IntType
-//                                    defaultValue = -1
-//                                },
-//                            )
-//                        ) {
-//                            AddEditMoneyScreen(
-//                                navController = navController
-//                            )
-//                        }
-//                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.example.convertedwallet.ui.main_screen
 
+import android.app.Dialog
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -13,19 +14,21 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.convertedwallet.model.Money
+import com.example.convertedwallet.ui.main_screen.add_edit_dialog.AddEditDialog
 import com.example.convertedwallet.ui.main_screen.main_screen_components.CurrencySlider
 import com.example.convertedwallet.ui.main_screen.main_screen_components.MoneyItem
 import com.example.convertedwallet.ui.main_screen.main_screen_components.UpdateButton
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -36,6 +39,34 @@ fun MainScreen(
     val list = viewModel.moneyList.value
     val scope = rememberCoroutineScope()
     val currentCurrency = viewModel.currentCurrency.value
+    val message = viewModel.showSnackbar.value
+    val isLoading = viewModel.isLoading.value
+
+    if (message.isNotEmpty()) {
+        LaunchedEffect(scaffoldState.snackbarHostState) {
+            val result = scaffoldState.snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
+            if (result == SnackbarResult.Dismissed) {
+                viewModel.closeSnackbar()
+            }
+        }
+    }
+
+    val dialogState =  remember { mutableStateOf(DialogState(false,null)) }
+
+    if(dialogState.value.showDialog)
+        AddEditDialog(
+            money = dialogState.value.money,
+            setShowDialog = {
+                dialogState.value = dialogState.value.copy(it,null)
+            },
+            modifier = Modifier.width(240.dp),
+            onSavePressed = { currency, inCurrency, money ->
+                viewModel.onEvent(MainScreenViewModel.MoneyEvent.SaveMoney(currency,inCurrency,money))
+            }
+        )
 
     Scaffold(
         snackbarHost = {
@@ -50,7 +81,10 @@ fun MainScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-
+                    dialogState.value = dialogState.value.copy(
+                        true,
+                        null
+                    )
                 },
                 backgroundColor = MaterialTheme.colors.primary,
                 modifier = Modifier.padding(bottom = 34.dp)
@@ -69,8 +103,10 @@ fun MainScreen(
         ) {
             Row(
                 modifier = Modifier
+                    .padding(horizontal = 10.dp)
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .height(85.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 CurrencySlider(
                     selectedCurrency = currentCurrency,
@@ -80,19 +116,33 @@ fun MainScreen(
                         )
                     },
                     modifier = Modifier
-                        .fillMaxHeight()
+                        .weight(3f)
                         .padding(10.dp)
                 )
                 UpdateButton(
-                    onClick = {},
+                    onClick = {
+                              viewModel.onEvent(MainScreenViewModel.MoneyEvent.UpdateRates)
+                    },
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(20.dp)
+                        .weight(1f)
+                        .padding(15.dp),
+                    isLoading = isLoading
                 )
             }
+
+            Divider(
+                modifier = Modifier
+                    .padding(
+                        vertical = 4.dp,
+                        horizontal = 60.dp
+                    )
+                    .height(2.dp)
+                    .background(Color.LightGray)
+            )
+
             LazyColumn(
                 modifier = Modifier
-                    .padding(vertical = 24.dp)
+                    .padding(vertical = 12.dp)
                     .fillMaxSize()
             ) {
 
@@ -107,11 +157,6 @@ fun MainScreen(
                         confirmStateChange = {
                             if (it == DismissValue.DismissedToEnd) {
                                 viewModel.onEvent(MainScreenViewModel.MoneyEvent.DeleteMoney(money))
-                                scope.launch {
-                                    scaffoldState.snackbarHostState.showSnackbar(
-                                        message = "Deleted",
-                                    )
-                                }
                             }
                             true
                         }
@@ -140,13 +185,14 @@ fun MainScreen(
 
                             Box(
                                 Modifier
-                                    .padding(8.dp)
+                                    .padding(6.dp)
                                     .clip(RoundedCornerShape(12.dp))
                                     .background(color)
                                     .fillMaxSize(),
                                 contentAlignment = Alignment.CenterStart,
                             ) {
                                 Icon(
+                                    modifier = Modifier.padding(start = 8.dp),
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Delete Icon",
                                     tint = iconColor
@@ -155,28 +201,43 @@ fun MainScreen(
                         },
                         dismissContent = {
                             Card(
+                                shape = RoundedCornerShape(29.dp),
                                 elevation = animateDpAsState(
                                     if (dismissState.dismissDirection != null) 4.dp else 0.dp
-                                ).value
+                                ).value,
+                                modifier = Modifier
+                                    .padding(
+                                        vertical = 4.dp,
+                                        horizontal = 8.dp)
                             ) {
                                 MoneyItem(
                                     money = money,
                                     baseCurrency = currentCurrency,
                                     modifier = Modifier
-                                        .padding()
                                         .background(MaterialTheme.colors.background)
                                         .fillMaxWidth()
                                         .clickable {
+                                            dialogState.value = dialogState.value.copy(
+                                                true,
+                                                money
+                                            )
                                         }
+                                        .padding(
+                                            vertical = 2.dp,
+                                            horizontal = 4.dp)
                                 )
                             }
                         },
                         directions = setOf(DismissDirection.StartToEnd),
-                        dismissThresholds = { FractionalThreshold(0.6f) }
+                        dismissThresholds = { FractionalThreshold(0.5f) }
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
         }
     }
 }
+
+data class DialogState(
+    var showDialog: Boolean,
+    var money: Money?,
+)

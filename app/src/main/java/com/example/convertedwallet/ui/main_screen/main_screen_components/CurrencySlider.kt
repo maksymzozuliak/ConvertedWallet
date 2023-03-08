@@ -72,14 +72,15 @@ fun CurrencySlider(
         elevation = 20.dp
     ) {
         Row(
+            modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
         ) {
 
             Button(
                 onClick = {
                     currencyState.value = BaseCurrency.EUR
+                    onChangeCurrency(BaseCurrency.EUR)
                 },
                 modifier = Modifier
-                    .padding(10.dp)
                     .weight(1f),
                 shape = RoundedCornerShape(20.dp),
                 elevation = ButtonDefaults.elevation(
@@ -96,12 +97,14 @@ fun CurrencySlider(
                 )
             }
 
+            Spacer(Modifier.width(10.dp))
+
             Button(
                 onClick = {
                     currencyState.value = BaseCurrency.UAH
+                    onChangeCurrency(BaseCurrency.UAH)
                 },
                 modifier = Modifier
-                    .padding(10.dp)
                     .weight(1f),
                 shape = RoundedCornerShape(20.dp),
                 elevation = ButtonDefaults.elevation(
@@ -118,12 +121,14 @@ fun CurrencySlider(
                 )
             }
 
+            Spacer(Modifier.width(10.dp))
+
             Button(
                 onClick = {
                     currencyState.value = BaseCurrency.USD
+                    onChangeCurrency(BaseCurrency.USD)
                 },
                 modifier = Modifier
-                    .padding(10.dp)
                     .weight(1f),
                 shape = RoundedCornerShape(20.dp),
                 elevation = ButtonDefaults.elevation(

@@ -1,8 +1,6 @@
 package com.example.convertedwallet.di
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.room.Room
 import com.example.convertedwallet.model.database.MoneyDatabase
 import com.example.convertedwallet.model.internet.CurrencyApi
@@ -10,7 +8,6 @@ import com.example.convertedwallet.model.repository.InternetRepository
 import com.example.convertedwallet.model.repository.InternetRepositoryImpl
 import com.example.convertedwallet.model.repository.MoneyRepository
 import com.example.convertedwallet.model.repository.MoneyRepositoryImpl
-import com.example.convertedwallet.model.spName
 import com.example.convertedwallet.model.use_cases.*
 import dagger.Module
 import dagger.Provides
@@ -20,7 +17,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-private const val BASE_URL = "https://api.exchangeratesapi.io/"
+private const val BASE_URL = "https://api.apilayer.com/exchangerates_data/"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -67,15 +64,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideMainRepository(api: CurrencyApi): InternetRepository = InternetRepositoryImpl(api)
-
-    @Singleton
-    @Provides
-    fun provideSharedPref(app: Application): SharedPreferences {
-        return app.applicationContext.getSharedPreferences(
-            spName,
-            Context.MODE_PRIVATE
-        )
-    }
+    fun provideInternetRepository(api: CurrencyApi): InternetRepository =
+        InternetRepositoryImpl(api)
 
 }

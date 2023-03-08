@@ -29,7 +29,7 @@ fun MoneyItem (
     Surface(
         shape = RoundedCornerShape(20.dp),
         modifier = modifier,
-        elevation = 20.dp
+        elevation = 5.dp
     ) {
         Row(
             modifier = Modifier
@@ -62,10 +62,10 @@ fun MoneyItem (
             )
             Divider(
                 modifier = Modifier
-                    .width(3.dp)
+                    .width(2.dp)
                     .fillMaxHeight()
                     .padding(vertical = 10.dp),
-                color = Color.LightGray
+                color = Color.Gray
             )
 
             Text(

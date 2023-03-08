@@ -22,7 +22,7 @@ import com.example.convertedwallet.model.Money
 fun AddEditDialog(
     money: Money?,
     modifier : Modifier = Modifier,
-//    onSavePressed : (String, Int) -> Unit,
+    onSavePressed : (String, Int, Money?) -> Unit,
     setShowDialog: (Boolean) -> Unit,
     backgroundColor: Color = Color.White
 ) {
@@ -115,7 +115,14 @@ fun AddEditDialog(
                         }
                         Spacer(modifier = Modifier.width(12.dp))
                         Button(
-                            onClick = {  },
+                            onClick = {
+                                onSavePressed(
+                                    currencyNameText.value,
+                                    inCurrencyText.value.toInt(),
+                                    money
+                                )
+                                setShowDialog(false)
+                            },
                             shape = RoundedCornerShape(16.dp),
                             elevation = ButtonDefaults.elevation(
                                 defaultElevation = 10.dp,
@@ -132,14 +139,4 @@ fun AddEditDialog(
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun DialogPreview() {
-    AddEditDialog(
-        money = null,
-        setShowDialog = {},
-        modifier = Modifier.width(240.dp)
-    )
 }
