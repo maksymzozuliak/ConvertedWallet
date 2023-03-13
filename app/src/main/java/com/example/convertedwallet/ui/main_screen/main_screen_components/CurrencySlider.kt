@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.convertedwallet.R
 import com.example.convertedwallet.model.BaseCurrency
-import com.example.convertedwallet.ui.theme.darkGray
 
 data class CurrencyState(
     val color: Color = Color.White,
@@ -26,6 +25,10 @@ data class CurrencyState(
 @Composable
 fun CurrencySlider(
     modifier: Modifier = Modifier,
+    buttonColor: Color = MaterialTheme.colors.primaryVariant,
+    pressedButtonColor : Color = MaterialTheme.colors.secondaryVariant,
+    iconColor: Color =  Color.Black,
+    pressedIconColor : Color = Color.DarkGray,
     selectedCurrency: BaseCurrency,
     onChangeCurrency: (BaseCurrency) -> Unit
 ) {
@@ -36,17 +39,18 @@ fun CurrencySlider(
     val UAHstate = remember { mutableStateOf(CurrencyState()) }
     val USDstate = remember { mutableStateOf(CurrencyState()) }
 
-    val pressedButtonState = CurrencyState(
-        color = Color.LightGray,
-        elevation = 0.dp,
-        iconColor = darkGray
+    val defaultButtonState = CurrencyState(
+        color = buttonColor,
+        elevation = 35.dp,
+        iconColor = iconColor
     )
 
-    val defaultButtonState = CurrencyState(
-        color = Color.White,
-        elevation = 35.dp,
-        iconColor = Color.Black
+    val pressedButtonState = CurrencyState(
+        color = pressedButtonColor,
+        elevation = 0.dp,
+        iconColor = pressedIconColor
     )
+
 
     if (currencyState.value == BaseCurrency.EUR) {
         EURstate.value = pressedButtonState.copy()

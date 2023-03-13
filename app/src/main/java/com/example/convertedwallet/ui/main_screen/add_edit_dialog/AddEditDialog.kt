@@ -24,7 +24,9 @@ fun AddEditDialog(
     modifier : Modifier = Modifier,
     onSavePressed : (String, Int, Money?) -> Unit,
     setShowDialog: (Boolean) -> Unit,
-    backgroundColor: Color = Color.White
+    backgroundColor: Color = MaterialTheme.colors.background,
+    isLoading: Boolean,
+    onError: (String) -> Unit
 ) {
 
     val currencyNameText = remember { mutableStateOf(money?.currency ?: "") }
@@ -116,12 +118,20 @@ fun AddEditDialog(
                         Spacer(modifier = Modifier.width(12.dp))
                         Button(
                             onClick = {
-                                onSavePressed(
-                                    currencyNameText.value,
-                                    inCurrencyText.value.toInt(),
-                                    money
-                                )
-                                setShowDialog(false)
+                                if(isLoading) {
+                                    onError("Loading")
+                                } else if (currencyNameText.value.length != 3) {
+                                    onError("Currency must have 3 symbols")
+                                } else if (inCurrencyText.value.isEmpty()) {
+                                    onError("Enter amount")
+                                } else {
+                                    onSavePressed(
+                                        currencyNameText.value,
+                                        inCurrencyText.value.toInt(),
+                                        money
+                                    )
+                                    setShowDialog(false)
+                                }
                             },
                             shape = RoundedCornerShape(16.dp),
                             elevation = ButtonDefaults.elevation(

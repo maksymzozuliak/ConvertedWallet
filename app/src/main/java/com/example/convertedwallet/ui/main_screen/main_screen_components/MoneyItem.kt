@@ -7,6 +7,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -24,7 +25,7 @@ fun MoneyItem (
     baseCurrency: BaseCurrency,
     currencyTextStyle: TextStyle = MaterialTheme.typography.h1,
     rateTextStyle: TextStyle = MaterialTheme.typography.subtitle1,
-    moneyTextStyle: TextStyle = MaterialTheme.typography.body1
+    moneyTextStyle: TextStyle = MaterialTheme.typography.body1,
 ) {
     Surface(
         shape = RoundedCornerShape(20.dp),
@@ -34,6 +35,7 @@ fun MoneyItem (
         Row(
             modifier = Modifier
                 .height(IntrinsicSize.Max),
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
             Column(

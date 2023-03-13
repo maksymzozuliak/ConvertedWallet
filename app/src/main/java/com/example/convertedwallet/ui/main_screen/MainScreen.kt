@@ -1,6 +1,5 @@
 package com.example.convertedwallet.ui.main_screen
 
-import android.app.Dialog
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -19,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.convertedwallet.model.Money
@@ -27,8 +25,6 @@ import com.example.convertedwallet.ui.main_screen.add_edit_dialog.AddEditDialog
 import com.example.convertedwallet.ui.main_screen.main_screen_components.CurrencySlider
 import com.example.convertedwallet.ui.main_screen.main_screen_components.MoneyItem
 import com.example.convertedwallet.ui.main_screen.main_screen_components.UpdateButton
-import kotlinx.coroutines.launch
-import java.time.Duration
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -37,7 +33,7 @@ fun MainScreen(
 ) {
     val scaffoldState = rememberScaffoldState()
     val list = viewModel.moneyList.value
-    val scope = rememberCoroutineScope()
+    val total = viewModel.total.value
     val currentCurrency = viewModel.currentCurrency.value
     val message = viewModel.showSnackbar.value
     val isLoading = viewModel.isLoading.value
@@ -65,7 +61,9 @@ fun MainScreen(
             modifier = Modifier.width(240.dp),
             onSavePressed = { currency, inCurrency, money ->
                 viewModel.onEvent(MainScreenViewModel.MoneyEvent.SaveMoney(currency,inCurrency,money))
-            }
+            },
+            isLoading = isLoading,
+            onError = { viewModel.onEvent(MainScreenViewModel.MoneyEvent.ShowMessage(it)) }
         )
 
     Scaffold(
@@ -99,7 +97,8 @@ fun MainScreen(
         scaffoldState = scaffoldState,
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
                 modifier = Modifier
@@ -138,6 +137,10 @@ fun MainScreen(
                     )
                     .height(2.dp)
                     .background(Color.LightGray)
+            )
+
+            Text(
+                text = total.toString()
             )
 
             LazyColumn(
@@ -224,7 +227,8 @@ fun MainScreen(
                                         }
                                         .padding(
                                             vertical = 2.dp,
-                                            horizontal = 4.dp)
+                                            horizontal = 4.dp
+                                        )
                                 )
                             }
                         },
