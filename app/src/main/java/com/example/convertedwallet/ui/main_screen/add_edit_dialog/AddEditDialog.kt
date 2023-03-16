@@ -26,7 +26,8 @@ fun AddEditDialog(
     setShowDialog: (Boolean) -> Unit,
     backgroundColor: Color = MaterialTheme.colors.background,
     isLoading: Boolean,
-    onError: (String) -> Unit
+    onError: (String) -> Unit,
+    textColor: Color = MaterialTheme.colors.onSurface
 ) {
 
     val currencyNameText = remember { mutableStateOf(money?.currency ?: "") }
@@ -72,6 +73,7 @@ fun AddEditDialog(
                                 top = 4.dp,
                                 bottom = 4.dp
                             ),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(textColor = textColor)
                     )
 
                     OutlinedTextField(
@@ -94,6 +96,7 @@ fun AddEditDialog(
                             .padding(
                                 horizontal = 12.dp
                             ),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(textColor = textColor)
                     )
 
                     Row(
@@ -125,11 +128,15 @@ fun AddEditDialog(
                                 } else if (inCurrencyText.value.isEmpty()) {
                                     onError("Enter amount")
                                 } else {
-                                    onSavePressed(
-                                        currencyNameText.value,
-                                        inCurrencyText.value.toInt(),
-                                        money
-                                    )
+                                    try {
+                                        onSavePressed(
+                                            currencyNameText.value,
+                                            inCurrencyText.value.toInt(),
+                                            money
+                                        )
+                                    } catch (e : Exception) {
+                                        onError("Error")
+                                    }
                                     setShowDialog(false)
                                 }
                             },

@@ -85,7 +85,6 @@ fun MainScreen(
                     )
                 },
                 backgroundColor = MaterialTheme.colors.primary,
-                modifier = Modifier.padding(bottom = 34.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -136,11 +135,15 @@ fun MainScreen(
                         horizontal = 60.dp
                     )
                     .height(2.dp)
-                    .background(Color.LightGray)
+                    .background(MaterialTheme.colors.secondary)
             )
 
             Text(
-                text = total.toString()
+                text = "Total : $total",
+                modifier = Modifier
+                    .padding(top = 8.dp),
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onBackground
             )
 
             LazyColumn(

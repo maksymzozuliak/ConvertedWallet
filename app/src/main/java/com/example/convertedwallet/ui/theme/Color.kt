@@ -1,8 +1,12 @@
 package com.example.convertedwallet.ui.theme
 
-import androidx.compose.material.Colors
 import androidx.compose.ui.graphics.Color
 
+//Light
 val Blue = Color(0xFF736CED)
-val Indigo = Color(0xFF3700B3)
-val DarkGray = Color(0xFF363636)
+val LightBlue = Color(0xFF948FDF)
+
+//Dark
+val DarkBlue = Color(0xFF150050)
+val DarkPurple = Color(0xFF3F0071)
+val Purple = Color(0xFF5D2D75)

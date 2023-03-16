@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.SystemUpdate
@@ -23,7 +24,8 @@ import com.example.convertedwallet.ui.main_screen.MainScreenViewModel
 fun UpdateButton(
     onClick : () -> Unit,
     modifier : Modifier = Modifier,
-    isLoading : Boolean
+    isLoading : Boolean,
+    buttonColor : Color = MaterialTheme.colors.primaryVariant
 ) {
 
     var currentRotation by remember { mutableStateOf(0f) }
@@ -67,7 +69,7 @@ fun UpdateButton(
             pressedElevation = 0.dp,
             disabledElevation = 20.dp
         ),
-        colors = ButtonDefaults.buttonColors(Color.White),
+        colors = ButtonDefaults.buttonColors(buttonColor),
         contentPadding = PaddingValues(4.dp)
     ) {
         Icon(

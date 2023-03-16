@@ -26,11 +26,12 @@ fun MoneyItem (
     currencyTextStyle: TextStyle = MaterialTheme.typography.h1,
     rateTextStyle: TextStyle = MaterialTheme.typography.subtitle1,
     moneyTextStyle: TextStyle = MaterialTheme.typography.body1,
+    textColor: Color = MaterialTheme.colors.onSurface
 ) {
     Surface(
         shape = RoundedCornerShape(20.dp),
         modifier = modifier,
-        elevation = 5.dp
+        elevation = 5.dp,
     ) {
         Row(
             modifier = Modifier
@@ -45,12 +46,14 @@ fun MoneyItem (
             ) {
                 Text(
                     style = currencyTextStyle,
-                    text = money.currency
+                    text = money.currency,
+                    color = textColor
                 )
 
                 Text(
                     text = String.format("%.2f", baseCurrency.toRate(money)),
-                    style = rateTextStyle
+                    style = rateTextStyle,
+                    color = textColor
                 )
             }
 
@@ -60,14 +63,15 @@ fun MoneyItem (
                     .weight(1f)
                     .padding(12.dp),
                 textAlign = TextAlign.End,
-                style = moneyTextStyle
+                style = moneyTextStyle,
+                color = textColor
             )
             Divider(
                 modifier = Modifier
                     .width(2.dp)
                     .fillMaxHeight()
                     .padding(vertical = 10.dp),
-                color = Color.Gray
+                color = MaterialTheme.colors.secondary
             )
 
             Text(
@@ -75,7 +79,8 @@ fun MoneyItem (
                 modifier = Modifier
                     .weight(1f)
                     .padding(12.dp),
-                style = moneyTextStyle
+                style = moneyTextStyle,
+                color = textColor
             )
         }
     }
